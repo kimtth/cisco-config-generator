@@ -43,7 +43,8 @@ var ajaxReadConfig = function(object_id){
         contentType: false,
         type: 'POST',
         success: function (rtn_data) {
-			console.log(rtn_data)
+			//console.log(rtn_data)
+			$("#generated_config").text(rtn_data);
             console.log("completed summit");
         },
 		error : function (rtn_data){
