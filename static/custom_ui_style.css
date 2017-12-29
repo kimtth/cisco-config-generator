@@ -1,0 +1,74 @@
+.span6 {
+	min-height: 100em;
+}
+
+.row_extend {
+	margin-top: 50px;
+}
+
+.row_extend_small {
+	margin-top: 20px;
+}
+body {
+	font-family: Helvetica, sans-serif;
+	font-size: 0.8em;
+	padding: 6px;
+}
+
+.statistics {
+	border-collapse: collapse;
+	/*width: 40em;*/
+	margin-bottom: 1em;
+}
+
+.statistics th,
+.statistics td {
+	border: 1px solid #ccc;
+	padding: 0.1em 0.9em;
+	height: 25px;
+	padding-top: 4px;
+	padding-bottom: 4px;
+}
+
+.statistics th {
+	font-size: 14px;
+	background-color: #99bfe6;
+	text-align: center;
+	height: 15px;
+}
+
+.stats-col-name {
+	width: 220px;
+}
+
+#summary th,
+#summary td {
+	font-size: 13px;
+}
+
+.stat-name {
+	font-weight: bold;
+	text-align: center;
+	font-size: 14px;
+}
+
+.stats-value {
+	width: 400px;
+	text-align: center;
+}
+
+.stats-value-select {
+	text-align: left;
+	padding-left: 18px;
+}
+
+.desc-value {
+	text-align: left;
+	padding-left: 10px;
+	font-style: italic;
+	font-size: 11px;
+}
+
+.thead {
+	height: 25px;
+}

@@ -1,0 +1,312 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+
+<head>
+    <title>Cisco Switch Config Generator</title>
+
+    <!-- JQuery //-->
+    <script src="/static/jquery-1.7.1.min.js"></script>
+
+    <!-- Bootstrap //-->
+    <link rel="stylesheet" type="text/css" href="/static/bootstrap.min.css" />
+    <script type="text/javascript" src="/static/bootstrap.min.js"></script>
+
+	<!-- Custom file -->
+	<link rel="stylesheet" type="text/css" href="/static/custom_ui_style.css" />
+	<script type="text/javascript" src="/static/custom_ui.js"></script>
+</head>
+
+<body>
+    <div class="navbar navbar-fixed-top no-print">
+        <div class="navbar-inner">
+            <div class="container">
+                <a class="brand" href="#">Config Generator with Kim</a>
+
+                <ul class="nav">
+                    <li class="active">
+                        <a href="#">Cisco</a>
+                    </li>
+					<li class="">
+                        <a href="#">Juniper</a>
+                    </li>
+                    <li class="">
+                        <a href="#">Help</a>
+                    </li>
+                </ul>
+            </div>
+            <!-- /tobar-inner -->
+        </div>
+        <!-- /container-fliud -->
+    </div>
+    <!-- /topbar -->
+	
+    <!-- span6 -->
+    <div class="container">
+        <div class="row row_extend" style="text-align: right;">
+			<button id="clear_event" style="width:100px; height:30px;">Clear</button>
+            <button id="run_event" style="width:100px; height:30px;">Generate</button>
+        </div>
+        <div class="row row_extend_small">
+            <div class="span6">
+                <form id="config_form" class="form-horizontal">
+                    <fieldset id="general_fields">
+                        <legend for="general_fields">Settings</legend>
+
+                        <table class="statistics table" id="total-stats">
+                            <thead>
+                                <tr>
+                                    <th colspan="2">
+                                        <div>Default</div>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="row-0">
+                                    <td class="stats-col-name">
+                                        <div class="stat-name">
+                                            IP
+                                        </div>
+                                    </td>
+                                    <td class="stats-value">
+                                        <span class="addinput">
+                                            <input type="text" style="width: 80%" placeholder="193.104.37.238" />
+                                        </span>
+                                        <span style="font-size:10px;">
+                                            <img src="/images/list-add.png" class="addRow">Add</span>
+                                    </td>
+                                </tr>
+
+                                <tr class="row-0">
+                                    <td class="stats-col-name">
+                                        <div class="stat-name">
+                                            WANInterface
+                                        </div>
+                                    </td>
+                                    <td class="stats-value">
+                                        <input type="text" style="width: 98%" placeholder="GigabitEthernet0/1" />
+                                    </td>
+                                </tr>
+                                <tr class="row-0">
+                                    <td class="stats-col-name">
+                                        <div class="stat-name">
+                                            LANInterface
+                                        </div>
+                                    </td>
+                                    <td class="stats-value">
+                                        <input type="text" style="width: 98%" placeholder="GigabitEthernet0/0" />
+                                        <div class="desc-value">Ignored when using the 'vlan' VLAN style</div>
+                                    </td>
+                                </tr>
+                                <tr class="row-0">
+                                    <td class="stats-col-name">
+                                        <div class="stat-name">
+                                            VLANStyle
+                                        </div>
+                                    </td>
+                                    <td class="stats-value-select">
+                                        <select id="vlan-style" style="width: 40%;">
+                                            <option value="subinterface" text-align="center">subinterface</option>
+                                            <option value="vlan">vlan</option>
+                                        </select>
+                                        <div class="desc-value">subinterface: Gig0/0.5, Gig0/0.6, etc... (base interface taken from LANInterface).
+                                            vlan: Vlan5, Vlan6, etc... </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <table class="statistics table">
+                            <thead>
+                                <tr>
+                                    <th colspan="2">
+                                        <div>Simple VPN</div>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="row-0">
+                                    <td class="stats-col-name">
+                                        <div class="stat-name">
+                                            sVPN
+                                        </div>
+                                    </td>
+                                    <td class="stats-value-select" style="font-size: 12px;">
+                                        <input type="radio" name="svpn" value="yes"> Yes
+                                        <input type="radio" name="svpn" value="no"> No
+                                        <span class="desc-value">Enable simple PPTP VPN </span>
+                                    </td>
+                                </tr>
+                                <tr class="row-0">
+                                    <td class="stats-col-name">
+                                        <div class="stat-name">
+                                            sVPNUse<br/>Radius
+                                        </div>
+                                    </td>
+                                    <td class="stats-value-select" style="font-size: 12px;">
+                                        <input type="radio" name="svpnRadius" value="yes"> Yes
+                                        <input type="radio" name="svpnRadius" value="no"> No
+                                        <div class="desc-value">Use RADIUS for authenticating and authorizing PPTP VPN connections </div>
+                                    </td>
+                                </tr>
+                                <tr class="row-0">
+                                    <td class="stats-col-name">
+                                        <div class="stat-name">
+                                            sVPNRadius<br/>ServerIP
+                                        </div>
+                                    </td>
+                                    <td class="stats-value">
+                                        <input type="text" style="width: 98%" placeholder="192.168.1.1" />
+                                    </td>
+                                </tr>
+                                <tr class="row-0">
+                                    <td class="stats-col-name">
+                                        <div class="stat-name">
+                                            sVPNRadius<br/>ServerName
+                                        </div>
+                                    </td>
+                                    <td class="stats-value">
+                                        <input type="text" style="width: 98%" placeholder="rrad1" />
+                                    </td>
+                                </tr>
+                                <tr class="row-0">
+                                    <td class="stats-col-name">
+                                        <div class="stat-name">
+                                            sVPNRadius<br/>ServerKey
+                                        </div>
+                                    </td>
+                                    <td class="stats-value">
+                                        <input type="text" style="width: 98%" placeholder="xxxxxxxx" />
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <table class="statistics table">
+                            <thead>
+                                <tr>
+                                    <th colspan="2">
+                                        <div>VLAN</div>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="row-0">
+                                    <td class="stats-col-name">
+                                        <div class="stat-name">
+                                            VLANs
+                                        </div>
+                                    </td>
+                                    <td class="stats-value">
+                                        <input type="text" style="width: 98%" placeholder="1, 2" />
+                                        <div class="desc-value">VLANs to create. Format: 1,2,10-20</div>
+                                    </td>
+                                </tr>
+                                <tr class="row-0">
+                                    <td class="stats-col-name">
+                                        <div class="stat-name">
+                                            VLANIPs
+                                        </div>
+                                    </td>
+                                    <td class="stats-value">
+                                        <input type="text" style="width: 98%" placeholder="10.1.v.1/24" />
+                                        <div class="desc-value">VLANs to create. Format: 1,2,10-20</div>
+                                    </td>
+                                </tr>
+                                <tr class="row-0">
+                                    <td class="stats-col-name">
+                                        <div class="stat-name">
+                                            DHCP<br/>OnVLAN
+                                        </div>
+                                    </td>
+                                    <td class="stats-value">
+                                        <input type="text" style="width: 98%" placeholder="all" />
+                                        <div class="desc-value">Set to 0 to disable DHCP on all VLANs, set to "all" to enable DHCP on all VLANs.
+                                            Format: 1,2,10-20
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr class="row-0">
+                                    <td class="stats-col-name">
+                                        <div class="stat-name">
+                                            DHCPScope<br/>DNSServers
+                                        </div>
+                                    </td>
+                                    <td class="stats-value">
+                                        <input type="text" style="width: 98%" placeholder="195.130.131.139" />
+                                        <div class="desc-value">SDNS servers the DHCP scope(s) hand out </div>
+                                    </td>
+                                </tr>
+                                <tr class="row-0">
+                                    <td class="stats-col-name">
+                                        <div class="stat-name">
+                                            GuestVLAN
+                                        </div>
+                                    </td>
+                                    <td class="stats-value">
+                                        <input type="text" style="width: 98%" placeholder="0" />
+                                        <div class="desc-value">Set to 0 to not create a guest VLAN </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <table class="statistics" id="total-stats">
+                            <thead>
+                                <tr>
+                                    <th colspan="2">
+                                        <div>Quality of Service</div>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="row-0">
+                                    <td class="stats-col-name">
+                                        <div class="stat-name">
+                                            Internet<br/>Upload
+                                        </div>
+                                    </td>
+                                    <td class="stats-value">
+                                        <input type="text" style="width: 98%" placeholder="8000" />
+                                        <div class="desc-value">For Quality of Service, shape upload traffic to this amount, in kilobytes per second.
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                    </fieldset>
+                </form>
+            </div>
+            <!-- /span6 -->
+
+            <!-- span6 -->
+            <div class="span6" id="script_container">
+                <form id="script_form">
+                    <fieldset id="generated_config_fields">
+                        <legend for="general_fields">Generated Configuration</legend>
+                        <div class="control-group">
+                            <textarea class="span6" wrap="off" id="generated_config"></textarea>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+            <!-- /span6 -->
+        </div>
+        <!-- row -->
+
+        <div class="row" style="text-align: right;">
+            <div class="span12">
+                <footer>
+                    <p>
+                        This work is licensed under a
+                        <a href="mailto:taeho.kim@pactera.com?Subject=Thanks%20Kim" target="_top">taeho.kim@pactera.com</a>.
+                        <br />
+                        <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">
+                            <img alt="Creative Commons Licence" style="border-width:0" src="http://i.creativecommons.org/l/by-nc-sa/3.0/88x31.png" />
+                        </a>
+                    </p>
+                </footer>
+            </div>
+        </div>
+</body>
+
+</html>
