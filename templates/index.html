@@ -20,7 +20,7 @@
     <div class="navbar navbar-fixed-top no-print">
         <div class="navbar-inner">
             <div class="container">
-                <a class="brand" href="#">Config Generator with Kim</a>
+                <a class="brand" href="#">Config Generator with kiiim</a>
 
                 <ul class="nav">
                     <li class="active">
@@ -48,7 +48,7 @@
         </div>
         <div class="row row_extend_small">
             <div class="span6">
-                <form id="config_form" class="form-horizontal">
+                <form id="config_form" class="form-horizontal" method="POST">
                     <fieldset id="general_fields">
                         <legend for="general_fields">Settings</legend>
 
@@ -56,26 +56,88 @@
                             <thead>
                                 <tr>
                                     <th colspan="2">
-                                        <div>Default</div>
+                                        <div>Default Group</div>
                                     </th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr class="row-0">
+								<tr class="row-0">
                                     <td class="stats-col-name">
                                         <div class="stat-name">
-                                            IP
+                                            FQDNHostname
                                         </div>
                                     </td>
                                     <td class="stats-value">
-                                        <span class="addinput">
-                                            <input type="text" style="width: 80%" placeholder="193.104.37.238" />
-                                        </span>
-                                        <span style="font-size:10px;">
-                                            <img src="/images/list-add.png" class="addRow">Add</span>
+                                        <input name="fqdn_hostname" type="text" style="width: 98%" placeholder="router1.lan.local" />
+										<span class="desc-value">Specify in FQDN format; domain name will also be used for DHCP scopes</span>
                                     </td>
                                 </tr>
-
+								<tr class="row-0">
+                                    <td class="stats-col-name">
+                                        <div class="stat-name">
+                                            AdminUsername
+                                        </div>
+                                    </td>
+                                    <td class="stats-value">
+                                        <input name="admin_username" type="text" style="width: 98%" placeholder="admin" />
+										<span class="desc-value">This user will be created with PRIVIL level 15 </span>
+                                    </td>
+                                </tr>
+								<tr class="row-0">
+                                    <td class="stats-col-name">
+                                        <div class="stat-name">
+                                            AdminPassword
+                                        </div>
+                                    </td>
+                                    <td class="stats-value">
+                                        <input name="admin_password" type="text" style="width: 98%" placeholder="admin" />
+                                    </td>
+                                </tr>
+								<tr class="row-0">
+                                    <td class="stats-col-name">
+                                        <div class="stat-name">
+                                            EnableSSH
+                                        </div>
+                                    </td>
+                                    <td class="stats-value-select" style="font-size: 12px;">
+                                        <input type="radio" name="enSSH" value="yes"> Yes
+                                        <input type="radio" name="enSSH" value="no"> No
+                                    </td>
+                                </tr>
+								<tr class="row-0">
+                                    <td class="stats-col-name">
+                                        <div class="stat-name">
+                                            DNSServer
+                                        </div>
+                                    </td>
+                                    <td class="stats-value-select" style="font-size: 12px;">
+                                        <input type="radio" name="dnsServer" value="yes"> Yes
+                                        <input type="radio" name="dnsServer" value="no"> No
+                                        <span class="desc-value">Enable the DNS server. Will also set the router as DNS server in DHCP scopes </span>
+                                    </td>
+                                </tr>
+                                <tr class="row-0">
+                                    <td class="stats-col-name">
+                                        <div class="stat-name">
+                                            SSHAltPort
+                                        </div>
+                                    </td>
+                                    <td class="stats-value">
+                                        <input name="sshaltport" type="text" style="width: 98%" placeholder="8022" />
+                                    </td>
+                                </tr>
+                                <tr class="row-0">
+                                    <td class="stats-col-name">
+                                        <div class="stat-name">
+                                            SSHTo22PrivateOnly
+                                        </div>
+                                    </td>
+                                    <td class="stats-value-select" style="font-size: 12px;">
+                                        <input type="radio" name="privateSSH" value="yes"> Yes
+                                        <input type="radio" name="privateSSH" value="no"> No
+										<span class="desc-value">Only allow SSH connections to port 22 from private IP ranges </span>
+                                    </td>
+                                </tr>
                                 <tr class="row-0">
                                     <td class="stats-col-name">
                                         <div class="stat-name">
@@ -83,7 +145,7 @@
                                         </div>
                                     </td>
                                     <td class="stats-value">
-                                        <input type="text" style="width: 98%" placeholder="GigabitEthernet0/1" />
+                                        <input name="wan_interface" type="text" style="width: 98%" placeholder="GigabitEthernet0/1" />
                                     </td>
                                 </tr>
                                 <tr class="row-0">
@@ -93,10 +155,24 @@
                                         </div>
                                     </td>
                                     <td class="stats-value">
-                                        <input type="text" style="width: 98%" placeholder="GigabitEthernet0/0" />
+                                        <input name="lan_interface" type="text" style="width: 98%" placeholder="GigabitEthernet0/0" />
                                         <div class="desc-value">Ignored when using the 'vlan' VLAN style</div>
                                     </td>
                                 </tr>
+								<tr class="row-0">
+									<td class="stats-col-name">
+										<div class="stat-name">
+											NTPServers IP
+										</div>
+									</td>
+									<td class="stats-value">
+										<span class="addinput">
+											<input name="ntp_server_ip" type="text" style="width: 80%" placeholder="193.104.37.238" />
+										</span>
+										<span style="font-size:10px;">
+											<img src="/images/list-add.png" class="addRow"></span>
+									</td>
+								</tr>
                                 <tr class="row-0">
                                     <td class="stats-col-name">
                                         <div class="stat-name">
@@ -104,7 +180,7 @@
                                         </div>
                                     </td>
                                     <td class="stats-value-select">
-                                        <select id="vlan-style" style="width: 40%;">
+                                        <select name="vlan_style" id="vlan-style" style="width: 40%;">
                                             <option value="subinterface" text-align="center">subinterface</option>
                                             <option value="vlan">vlan</option>
                                         </select>
@@ -154,7 +230,7 @@
                                         </div>
                                     </td>
                                     <td class="stats-value">
-                                        <input type="text" style="width: 98%" placeholder="192.168.1.1" />
+                                        <input name ="svpnradius_ip" type="text" style="width: 98%" placeholder="192.168.1.1" />
                                     </td>
                                 </tr>
                                 <tr class="row-0">
@@ -164,7 +240,7 @@
                                         </div>
                                     </td>
                                     <td class="stats-value">
-                                        <input type="text" style="width: 98%" placeholder="rrad1" />
+                                        <input name="svpnradius_name" type="text" style="width: 98%" placeholder="rrad1" />
                                     </td>
                                 </tr>
                                 <tr class="row-0">
@@ -174,7 +250,7 @@
                                         </div>
                                     </td>
                                     <td class="stats-value">
-                                        <input type="text" style="width: 98%" placeholder="xxxxxxxx" />
+                                        <input name="svpnradius_serverkey" type="text" style="width: 98%" placeholder="xxxxxxxx" />
                                     </td>
                                 </tr>
                             </tbody>
@@ -196,7 +272,7 @@
                                         </div>
                                     </td>
                                     <td class="stats-value">
-                                        <input type="text" style="width: 98%" placeholder="1, 2" />
+                                        <input name="vlans" type="text" style="width: 98%" placeholder="1, 2" />
                                         <div class="desc-value">VLANs to create. Format: 1,2,10-20</div>
                                     </td>
                                 </tr>
@@ -207,8 +283,8 @@
                                         </div>
                                     </td>
                                     <td class="stats-value">
-                                        <input type="text" style="width: 98%" placeholder="10.1.v.1/24" />
-                                        <div class="desc-value">VLANs to create. Format: 1,2,10-20</div>
+                                        <input name="vlan_ips" type="text" style="width: 98%" placeholder="10.1.v.1/24" />
+                                        <div class="desc-value">IP address for the VLANs. Format: 192.0.2.1/24. v will be replaced by the VLAN number </div>
                                     </td>
                                 </tr>
                                 <tr class="row-0">
@@ -218,23 +294,27 @@
                                         </div>
                                     </td>
                                     <td class="stats-value">
-                                        <input type="text" style="width: 98%" placeholder="all" />
+                                        <input name="dhcp_onvlan" type="text" style="width: 98%" placeholder="all" />
                                         <div class="desc-value">Set to 0 to disable DHCP on all VLANs, set to "all" to enable DHCP on all VLANs.
                                             Format: 1,2,10-20
                                         </div>
                                     </td>
                                 </tr>
-                                <tr class="row-0">
-                                    <td class="stats-col-name">
-                                        <div class="stat-name">
-                                            DHCPScope<br/>DNSServers
-                                        </div>
-                                    </td>
-                                    <td class="stats-value">
-                                        <input type="text" style="width: 98%" placeholder="195.130.131.139" />
-                                        <div class="desc-value">SDNS servers the DHCP scope(s) hand out </div>
-                                    </td>
-                                </tr>
+								<tr class="row-0">
+									<td class="stats-col-name">
+										<div class="stat-name">
+											DHCPScope<br/>DNSServers
+										</div>
+									</td>
+									<td class="stats-value">
+										<span class="addinput">
+											<input name="dhcp_scope" type="text" style="width: 80%" placeholder="193.104.37.238" />
+										</span>
+										<span style="font-size:10px;">
+											<img src="/images/list-add.png" class="addRow"></span>
+										<div class="desc-value">DNS servers the DHCP scope(s) hand out </div>
+									</td>
+								</tr>
                                 <tr class="row-0">
                                     <td class="stats-col-name">
                                         <div class="stat-name">
@@ -242,7 +322,7 @@
                                         </div>
                                     </td>
                                     <td class="stats-value">
-                                        <input type="text" style="width: 98%" placeholder="0" />
+                                        <input name="guestvlan" type="text" style="width: 98%" placeholder="0" />
                                         <div class="desc-value">Set to 0 to not create a guest VLAN </div>
                                     </td>
                                 </tr>
@@ -265,7 +345,7 @@
                                         </div>
                                     </td>
                                     <td class="stats-value">
-                                        <input type="text" style="width: 98%" placeholder="8000" />
+                                        <input name="qos_upload" type="text" style="width: 98%" placeholder="8000" />
                                         <div class="desc-value">For Quality of Service, shape upload traffic to this amount, in kilobytes per second.
                                         </div>
                                     </td>
