@@ -17,10 +17,7 @@ class CiscoGen(AbstractGen):
             print(">>> debug data -- end")
 
             # generate
-            self.__decouple_aaa_config_block()
-            fqdn_value = post_data.get("fqdn_hostname")
-            self.__decouple_fqdn_hostname(fqdn_value)
-            self.__decouple_admin_user(post_data)
+            self.__decouple_common_block(post_data)
             self.__decouple_common_router_assembler(post_data)
             self.__cisco_basic_router(post_data)
 
@@ -50,6 +47,13 @@ class CiscoGen(AbstractGen):
 
         return ConfigBlock.BUFF
 
+    def __decouple_common_block(self, post_data):
+        self.__decouple_aaa_config_block()
+        fqdn_value = post_data.get("fqdn_hostname")
+        self.__decouple_fqdn_hostname(fqdn_value)
+        self.__decouple_admin_user(post_data)
+        self.__decouple_line_block()
+
     # part1. start -- common
     def __decouple_aaa_config_block(self):
         ConfigBlock.POS_AAA += "aaa new-model\n"
@@ -78,13 +82,14 @@ class CiscoGen(AbstractGen):
     def __decouple_line_block(self):
         ConfigBlock.POS_LINE += "line con 0\n";
         ConfigBlock.POS_LINE += 'logging synchronous\n'
+        ConfigBlock.POS_LINE += '!\n'
 
     def __decouple_enSSH(self, post_data):
         ConfigBlock.POS_INITIAL += "!          \n" \
-                                   + "!    /\    \n" \
-                                   + "!   /  \   If your device doesn't have an RSA key yet, execute the following command:\n" \
-                                   + "!  / !! \  crypto key generate rsa general-keys modulus 2048 \n" \
-                                   + "! <------>  \n" \
+                                   + "!    /\\    \n" \
+                                   + "!   /  \\   If your device doesn't have an RSA key yet, execute the following command:\n" \
+                                   + "!  / !! \\  crypto key generate rsa general-keys modulus 2048 \n" \
+                                   + "! /------\\  \n" \
                                    + "ip ssh version 2\n"
 
         ssh_alt_port = post_data.get("sshaltport")
@@ -127,8 +132,9 @@ class CiscoGen(AbstractGen):
         ntp_server_ips = post_data.getall("ntp_server_ip")
         if len(ntp_server_ips) > 0:
             for ip in ntp_server_ips:
-                ConfigBlock.POS_NTP += "ntp server "
-                ConfigBlock.POS_NTP += ip + "\n"
+                if ip != "":
+                    ConfigBlock.POS_NTP += "ntp server "
+                    ConfigBlock.POS_NTP += ip + "\n"
 
         ConfigBlock.POS_OBJGROUP += "object-group network PrivateRanges\n" \
                                     + " 192.168.0.0 255.255.0.0\n" \
@@ -140,7 +146,8 @@ class CiscoGen(AbstractGen):
                                    + " deny udp any any eq 53\n" \
                                    + " deny tcp any any eq 53\n" \
                                    + " permit ip any any\n" \
-                                   + "!\n"
+
+        ConfigBlock.POS_IPV4ACL += "!\n"
 
         # VLAN config
         self.__decouple_vlan_setting(post_data)
@@ -159,17 +166,15 @@ class CiscoGen(AbstractGen):
                 ConfigBlock.POS_INT += "interface "
                 ConfigBlock.POS_INT += lan_interface
                 ConfigBlock.POS_INT += "." + vlan_str + "\n"
-                ConfigBlock.POS_INT += "encapsulation dot1Q " + vlan_str + "\n"
-                ConfigBlock.POS_INT += "!\n"
+                ConfigBlock.POS_INT += " encapsulation dot1Q " + vlan_str + "\n"
             else:
                 ConfigBlock.POS_VLAN += "vlan " + vlan_str
                 ConfigBlock.POS_INT += "interface Vlan " + vlan_str
-                ConfigBlock.POS_INT += "!\n"
 
-            ConfigBlock.POS_INT += "no ip proxy-arp\n"
-            ConfigBlock.POS_INT += "no ip redirects\n"
-            ConfigBlock.POS_INT += "ip nat inside\n"
-            ConfigBlock.POS_INT += "no ip unreachables\n"
+            ConfigBlock.POS_INT += " no ip proxy-arp\n"
+            ConfigBlock.POS_INT += " no ip redirects\n"
+            ConfigBlock.POS_INT += " ip nat inside\n"
+            ConfigBlock.POS_INT += " no ip unreachables\n"
 
             # IP address for the VLANs. Format: 192.0.2.1/24. v will be replaced by the VLAN number
             vlan_ip_with_subnet = post_data.get("vlan_ips")
@@ -179,8 +184,8 @@ class CiscoGen(AbstractGen):
             ip_address = vlan_ips_split[0]
             subnet_mask = vlan_ips_split[1]
 
-            ConfigBlock.POS_INT += "ip address " + ip_address + " " + self.__calcDottedNetmask(subnet_mask) + "\n"
-            ConfigBlock.POS_INT += "no shutdown" + "\n"
+            ConfigBlock.POS_INT += " ip address " + ip_address + " " + self.__calcDottedNetmask(subnet_mask) + "\n"
+            ConfigBlock.POS_INT += " no shutdown" + "\n"
 
             dhcp_onvlan = post_data.get("dhcp_onvlan")
             if dhcp_onvlan == "all":
@@ -201,19 +206,24 @@ class CiscoGen(AbstractGen):
                 else:
                     ConfigBlock.POS_DHCP += "dns-server " + self.__get_dns_ips(post_data) + "\n"
 
+                ConfigBlock.POS_DHCP += "!\n"
+
             guestvlan = post_data.get("guestvlan")
             if vlan_str == guestvlan:
                 ConfigBlock.POS_IPV4ACL += "ip access-list extended Guest-IN" + "\n"
                 ConfigBlock.POS_IPV4ACL += " permit ip any host " + "\n"
                 ConfigBlock.POS_IPV4ACL += " deny ip any object-group PrivateRanges" + "\n"
                 ConfigBlock.POS_IPV4ACL += " permit ip any any" + "\n"
+                ConfigBlock.POS_IPV4ACL += "!\n"
 
                 ConfigBlock.POS_INT += "ip access-group Guest-IN in" + "\n"
 
+            ConfigBlock.POS_INT += "!\n"
+
     def __get_dns_ips(self, post_data):
         dhcp_scope_list = post_data.getall("dhcp_scope")
-        ConfigBlock.POS_INT = " ".join(dhcp_scope_list[0:]) + "\n"
-        return ConfigBlock.POS_INT
+        temp_buff = " ".join(dhcp_scope_list[0:])
+        return temp_buff
 
     # How to convert the CIDR notation (192.168.0.0/24) of a subnetmask to the dotted decimal form (255.255.255.0).
     def __calcDottedNetmask(self, mask):
@@ -282,13 +292,13 @@ class CiscoGen(AbstractGen):
         ConfigBlock.POS_VPDN += "vpdn logging user" + "\n"
         ConfigBlock.POS_VPDN += "!\n"
 
-        ConfigBlock.POS_VPDN = "vpdn-group 1" + "\n"
+        ConfigBlock.POS_VPDN += "vpdn-group 1" + "\n"
         ConfigBlock.POS_VPDN += " accept-dialin" + "\n"
         ConfigBlock.POS_VPDN += "  protocol pptp" + "\n"
         ConfigBlock.POS_VPDN += "  virtual-template 1" + "\n"
         ConfigBlock.POS_VPDN += "!\n"
 
-        ConfigBlock.POS_INT = "interface Virtual-Template1" + "\n"
+        ConfigBlock.POS_INT += "interface Virtual-Template1" + "\n"
         ConfigBlock.POS_INT += " ip unnumbered " + wan_interface + "\n"
         if svpn_radius == "yes":
             ConfigBlock.POS_INT += " ppp authentication ms-chap-v2 PPTPVPNRadius" + "\n"
@@ -298,6 +308,8 @@ class CiscoGen(AbstractGen):
         ConfigBlock.POS_INT += " ip nat inside" + "\n"
         ConfigBlock.POS_INT += " ppp encrypt mppe auto" + "\n"
         ConfigBlock.POS_INT += " peer default ip address pool VPN" + "\n"
+
+        ConfigBlock.POS_INT += "!\n"
 
     def __cisco_basic_router(self, post_data):
         dns_server = post_data.get("dnsServer")
@@ -313,6 +325,8 @@ class CiscoGen(AbstractGen):
             ConfigBlock.POS_INT += " no ip unreachables" + "\n"
             ConfigBlock.POS_INT += " no ip redirects" + "\n"
             ConfigBlock.POS_INT += " no mop enabled" + "\n"
+
+            ConfigBlock.POS_INT += "!\n"
 
         svpn = post_data.get("svpn")
         wan_interface = post_data.get("wan_interface")
@@ -332,7 +346,10 @@ class CiscoGen(AbstractGen):
         ConfigBlock.POS_INT += " no cdp enable" + "\n"
         ConfigBlock.POS_INT += " no mop enabled" + "\n"
 
+        ConfigBlock.POS_INT += "!\n"
+
         # NAT
         ConfigBlock.POS_NAT += "ip nat inside source list NAT interface " + wan_interface + " overload" + "\n"
+        ConfigBlock.POS_NAT += "!\n"
 
     # part3. end -- cisco basic router

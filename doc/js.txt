@@ -1,0 +1,107 @@
+﻿
+#Define class
+1. the prototype pattern
+
+function ConfigGen(){
+
+}
+
+ConfigGen.prototype.interface = function(){
+
+}
+
+ConfigGen.prototype.vLan = function(){
+
+}
+
+var config = new ConfigGen();
+config.interface();
+
+
+2. the constructor pattern
+
+function Employee (name, profession) {
+​	this.name = name;
+​	his.profession = profession;
+}
+​
+​var richard = new Employee (“Richard”, “Developer”) // richard is a new object we create from the Employee () constructor function.​
+​
+console.log(richard.name); //richard​
+console.log(richard.profession); // Developer
+
+
+3. Mixed with prototype and constructor
+
+//constructor
+function User (theName, theEmail) {
+    this.name = theName;
+    this.email = theEmail;
+    this.quizScores = [];
+    this.currentScore = 0;
+}
+​
+//prototype
+User.prototype = {
+    constructor: User,
+    saveScore:function (theScoreToAdd)  {
+        this.quizScores.push(theScoreToAdd)
+    },
+    showNameAndScores:function ()  {
+        var scores = this.quizScores.length > 0 ? this.quizScores.join(",") : "No Scores Yet";
+        return this.name + " Scores: " + scores;
+    },
+    changeEmail:function (newEmail)  {
+        this.email = newEmail;
+        return "New Email Saved: " + this.email;
+    }
+}
+
+#Using Namespace
+
+var myObject = {
+
+    method1: function() {
+        // do stuff
+    },
+
+    method2: function(p) {
+        // do stuff
+    }
+};
+
+myObject.method1();
+
+#Best
+It essentially boils down to if you need multiple instances of your object or not; object defined with a constructor lets you have multiple instances of that object. Object literals are basically singletons with variables/methods that are all public.
+
+
+// define the objects: => Singleton
+var objLit = {
+  x: 0,
+  y: 0,
+  z: 0,
+  add: function () {
+    return this.x + this.y + this.z;
+  }
+};
+
+var ObjCon = function(_x, _y, _z) {
+  var x = _x; // private
+  var y = _y; // private
+  this.z = _z; // public
+  this.add = function () {
+    return x + y + this.z; // note x, y doesn't need this.
+  };
+};
+
+// use the objects:
+objLit.x = 3; 
+objLit.y = 2; 
+objLit.z = 1; 
+console.log(objLit.add());    
+
+var objConIntance = new ObjCon(5,4,3); // instantiate an objCon
+console.log(objConIntance.add());
+console.log((new ObjCon(7,8,9)).add()); // another instance of objCon
+console.log(objConIntance.add()); // same result, not affected by previous line

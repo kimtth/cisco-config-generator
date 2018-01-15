@@ -1,3 +1,35 @@
+$( document ).ready(function() {
+    $("input[name=enSSH][value=yes]").prop("checked", true);
+    $("input[name=svpn][value=yes]").prop("checked", true);
+    $("input[name=privateSSH][value=yes]").prop("checked", true);
+
+     $("input[name=dnsServer][value=no]").prop("checked", true);
+     $("input[name=svpnRadius][value=no]").prop("checked", true);
+
+     $("input[name=fqdn_hostname]").val("router1.lan.local");
+     $("input[name=admin_username]").val("admin");
+     $("input[name=admin_password]").val("admin");
+
+     $("input[name=wan_interface]").val("GigabitEthernet0/1");
+     $("input[name=lan_interface]").val("GigabitEthernet0/0");
+
+     $("input[name=svpnradius_ip]").val("192.168.1.1");
+     $("input[name=svpnradius_name]").val("rrad1");
+     $("input[name=svpnradius_serverkey]").val("xxxxxxx");
+
+     $("input[name=guestvlan]").val("0");
+     $("input[name=qos_upload]").val("8000");
+     $("input[name=vlans]").val("1,2");
+     $("input[name=vlan_ips]").val("10.1.v.1/24");
+     $("input[name=sshaltport]").val("8022");
+
+     $("input[name=dhcp_onvlan]").val("all");
+     $("input[name=dhcp_scope]").val("195.130.131.139");
+     $("input[name=ntp_server_ip]").val("195.104.37.238");
+
+     $("input[name=vlan_style]").val("subinterface");
+});
+
 $(document).on("click", ".removeRow",
 	function () {
 		// $(this).closest("addinput").remove();

@@ -59,7 +59,7 @@ def config_analyze(filename='cisco_basic_router.tpl'):
     print("debug postdata: " + str(post_data))
 
     post_data = request.forms
-    intial_value_mapper(post_data)
+    #intial_value_mapper(post_data)
     cis_gen = CiscoGen()
     ret = cis_gen.generate_config(post_data)
     print(ret)
@@ -79,6 +79,7 @@ def config_analyze(filename='cisco_basic_router.tpl'):
     response_dict = ConfigBlock.RES_DICT
     return template(filename, developer="Kim", local_time=local_time, **response_dict)
 
+# For debugging
 def intial_value_mapper(post_data):
     for key, value in post_data.iteritems():
         if value == "":
@@ -87,7 +88,7 @@ def intial_value_mapper(post_data):
             elif key == "dhcp_onvlan":
                 post_data[key] = "all"
             elif key == "dhcp_scope":
-                post_data[key] = "195.130.131.139l"
+                post_data[key] = "195.130.131.139"
             elif key == "sshaltport":
                 post_data[key] = "8022"
             elif key == "wan_interface":
