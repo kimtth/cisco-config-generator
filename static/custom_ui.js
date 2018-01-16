@@ -49,13 +49,13 @@ $(document).on("click", ".addRow",
 );
 
 $(document).on("click", "#clear_event",
-	function () {
-		$("#generated_config").text("");
+    function(){
         clear_buff();
-	}
+    }
 );
 
 var clear_buff = function(){
+    $("#generated_config").text("");
     $.ajax({
         url: "/config_clear",
         data: "",
@@ -64,7 +64,7 @@ var clear_buff = function(){
         contentType: false,
         type: 'GET',
         success: function (rtn_data) {
-            console.log("clean_completed summit");
+            console.log("clean_completed");
         },
         error : function (rtn_data){
             console.log("error");
@@ -73,10 +73,8 @@ var clear_buff = function(){
 }
 
 $(document).on("click", "#run_event",
-	function () {
-		//var text_config = config_template;
-		clear_buff();
-		ajaxReadConfig("config_form");
+    function(){
+	    ajaxReadConfig("config_form");
 	}
 );
 
@@ -92,6 +90,7 @@ var ajaxReadConfig = function(object_id){
         contentType: false,
         type: 'POST',
         success: function (rtn_data) {
+            clear_buff();
 			$("#generated_config").text(rtn_data);
             console.log("completed summit");
         },
